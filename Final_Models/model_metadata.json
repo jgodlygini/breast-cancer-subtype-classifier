@@ -1,0 +1,53 @@
+{
+  "model_name": "Dual Platform GASE v3",
+  "version": "3.0",
+  "date": "2026-09-20",
+  "description": "Gene-Aware Subtype Ensemble \u2014 Dual Platform (TCGA + SCAN-B)",
+  "classes": {
+    "0": "Luminal_A",
+    "1": "Luminal_B",
+    "2": "HER2_Enriched",
+    "3": "Triple_Negative"
+  },
+  "performance": {
+    "TCGA_cv_accuracy": "93.12% \u00b1 1.64%",
+    "TCGA_cv_auc": "0.9907 \u00b1 0.0031",
+    "TCGA_p_vs_sota": "0.0062",
+    "SCANB_cv_accuracy": "92.63% \u00b1 0.74%",
+    "SCANB_cv_auc": "0.9919 \u00b1 0.0013",
+    "SCANB_p_vs_sota": "0.0005",
+    "sota_reference": "GSAE 88.79%"
+  },
+  "training_data": {
+    "TCGA_patients": 945,
+    "SCANB_patients": 3567,
+    "total": 4512,
+    "features": "89 curated bio genes + block encoding"
+  },
+  "uncertainty_threshold": 0.7,
+  "tracks": {
+    "A": "TCGA (RSEM RNA-seq, PAM50 labels)",
+    "B": "SCAN-B (FPKM RNA-seq, PAM50 labels)"
+  },
+  "gene_streams": [
+    "Luminal",
+    "HER2",
+    "Basal",
+    "Proliferation",
+    "Immune",
+    "Full_Bio"
+  ],
+  "n_base_learners": {
+    "track_a": 8,
+    "track_b": 8
+  },
+  "meta_feature_width": 32,
+  "inference_instructions": {
+    "step1": "Scale input with track scaler",
+    "step2": "Extract block features",
+    "step3": "Get probas from all RF streams + LSTM",
+    "step4": "Stack into meta-features with zero padding",
+    "step5": "Predict with meta_learner",
+    "step6": "Flag if max(proba) < 0.70"
+  }
+}
